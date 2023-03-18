@@ -1,3 +1,119 @@
+
+# quattrocento-python
+
+This repository contains Python code that can be used to interface with OT Bioelettronica Quattrocento HD EMG biological signal amplifier. The code is based on [Sessantoquattro control repository](https://github.com/SPosella/Python-codes) provided by the manufacturer, and modified to work with Quattrocento.
+
+It is designed to be relatively easily modified and embedded in any project that involves processing real time HD EMG data.
+
+## Installation
+
+This code has been developed for a Python 3.8 environment.
+
+Download and install it on your system:
+
+```bash
+  $ git clone https://github.com/screamuch/quattrocento-python
+  $ cd quattrocento-python
+  $ pip install -r requirements.txt
+```
+
+## Configuration
+
+The bulk of configuration happens in the `configuration_generator.py` file, except the network parameters. Those are set in `stream_data.py`:
+
+```python
+# Network settings
+ip_address = '192.168.0.103'    # written on the QC's LCD
+port = 23456                    # can be changed in online interface
+```
+
+Then, follow directions in `configuration_generator.py` and [communication protocol](https://otbioelettronica.it/en/?preview=1&option=com_dropfiles&format=&task=frontfile.download&catid=41&id=70&Itemid=1000000000000) to set your acquisition parameters.
+
+### Default configuration
+
+As is, this code will print an array of integers that represent signal from each electrode. By default, it is set up to work with the following configuration:
+
+- `MULTIPLE IN1`
+    - `AD1x64` 64 channels single adapter
+    - `GR10MM0808` 64 Adhesive Array 10mm i.e.d. sensor
+    - `Extensor Digitorum Communis` muscle (forearm)
+    - `Right` side
+    - `Monopolar` acquisition mode
+    - `10Hz` High Pass Filter
+    - `500Hz` Low Pass Filter
+
+
+## Usage
+
+### Demo
+
+To run this code with default parameters, read the **Configuration** section to set the IP address and port of your Quattrocento device.
+
+Then simply run:
+
+```bash
+$ python stream_data.py
+```
+
+Or, if you want to write the data directly into a CSV file, run:
+
+```bash
+$ python write_to_csv.py example
+```
+
+And you will see `example.csv` file with captured data.
+
+### Custom Usage
+
+To run this code outside the demo, place `stream_data.py` and `configuration_generator.py` in your project folder. Add the following lines to your code, and use the `emg_data_frame` variable as you need.
+
+```python
+import stream_data
+
+# Network settings
+ip_address = '192.168.0.103'    # written on the QC's LCD
+port = 23456                    # can be changed in online interface
+
+# Create start command and get basic setup information
+(start_command,
+number_of_channels,
+sample_frequency,
+bytes_in_sample) = stream_data.create_bin_command(start=1)
+
+connection = stream_data.connect_to_qc(ip_address, port, start_command)
+
+# Replace with a desired condition
+while True:
+    emg_data_frame = stream_data.read_emg_signal(connection,
+                            number_of_channels,
+                            bytes_in_sample,
+                            output_milli_volts=False)
+
+    # Adjust the following line to your needs
+    print(emg_data_frame)
+
+# Sends a stop acquisition command to quattrocento
+# Not necessary, but saves battery on the amplifier
+stream_data.disconnect_from_qc(connection)
+```
+
+Additionally, you can refer to `write_to_csv.py` file for an example of how it can be done.
+
+## Acknowledgements (and/or Authors?)
+
+ - see email
+
+## Citation
+
+If you use this software, please cite it as below:
+
+```
+needs a CITATION.cff file
+```
+
+## License
+
+```
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -199,3 +315,4 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+```
