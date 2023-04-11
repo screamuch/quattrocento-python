@@ -18,7 +18,7 @@ import configuration_generator
 import signal
 
 # Network settings
-ip_address = '192.168.1.32'    # written on the QC's LCD
+ip_address = '192.168.1.14'    # written on the QC's LCD
 port = 23456                    # can be changed in online interface
 
 # Conversion factor to convert byte values into mV
