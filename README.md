@@ -5,6 +5,8 @@ This repository contains Python code that can be used to interface with OT Bioel
 
 It is designed to be relatively easily modified and embedded in any project that involves processing real time HD EMG data.
 
+[![DOI](https://zenodo.org/badge/615588421.svg)](https://zenodo.org/badge/latestdoi/615588421)
+
 ## Installation
 
 This code has been developed for a Python 3.8 environment.
