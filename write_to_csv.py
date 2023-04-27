@@ -1,7 +1,7 @@
 import stream_data
 import csv, sys
 
-ip_address = "192.168.1.32"
+ip_address = "192.168.1.14"
 port = 23456
 
 (start_command,
@@ -15,9 +15,9 @@ file_name = sys.argv[1] + ".csv"
 data_file = open(file_name, 'w')
 data_file_writer = csv.writer(data_file)
 
-print("Recording 6500 samples...")
+print("Recording 20000 samples...")
 
-for i in range(6500):
+for i in range(20000):
     emg_data_frame = stream_data.read_emg_signal(connection,
                             number_of_channels,
                             bytes_in_sample,
@@ -28,4 +28,5 @@ for i in range(6500):
 
 print("Done recording")
 
-stream_data.disconnect_from_qc(connection)
+stream_data.disconnect_from_sq(connection)
+

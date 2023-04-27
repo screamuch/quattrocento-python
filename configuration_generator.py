@@ -23,16 +23,38 @@ from crc import Calculator, Crc8
 
 # Set number of channels (electrodes) you will use
 # This number can be 96, 192, 288, 384
-NUMBER_OF_CHANNELS = 288
+# The bits will be automatically set
+NUMBER_OF_CHANNELS = 96
 
 # Set sampling frequency you will use
-# This value must match the bits in ACQ_SETT and can be 512, 2048, 5120, 10240
-SAMPLING_FREQUENCY = 2048
+# This value can be 512, 2048, 5120, 10240
+# The bits will be automatically set
+SAMPLING_FREQUENCY = 512
 
 # ACQ_SETT
 # Sampling frequency, number of channels,
 # start/stop acquisition, start/stop recording
-ACQ_SETT = "10001101"
+ACQ_SETT = list("10000001")
+
+if NUMBER_OF_CHANNELS == 96:
+    ACQ_SETT[5:7] = ["0", "0"]
+elif NUMBER_OF_CHANNELS == 192:
+    ACQ_SETT[5:7] = ["0", "1"]
+elif NUMBER_OF_CHANNELS == 288:
+    ACQ_SETT[5:7] = ["1", "0"]
+elif NUMBER_OF_CHANNELS == 384:
+    ACQ_SETT[5:7] = ["1", "1"]
+
+if SAMPLING_FREQUENCY == 512:
+    ACQ_SETT[3:5] = ["0", "0"]
+elif SAMPLING_FREQUENCY == 2048:
+    ACQ_SETT[3:5] = ["0", "1"]
+elif SAMPLING_FREQUENCY == 5120:
+    ACQ_SETT[3:5] = ["1", "0"]
+elif SAMPLING_FREQUENCY == 10240:
+    ACQ_SETT[3:5] = ["1", "1"]
+
+ACQ_SETT = "".join(ACQ_SETT)
 
 # AN_OUT_IN_SEL
 # Select the input source and gain for the analog output
@@ -96,14 +118,14 @@ MULTIPLE_IN1_CONF1 = "00000100"
 MULTIPLE_IN1_CONF2 = "10010100"
 
 # MULTIPLE_IN2_CONF
-MULTIPLE_IN2_CONF0 = "00011010"
-MULTIPLE_IN2_CONF1 = "00000100"
-MULTIPLE_IN2_CONF2 = "10010100"
+MULTIPLE_IN2_CONF0 = "00000000"
+MULTIPLE_IN2_CONF1 = "00000000"
+MULTIPLE_IN2_CONF2 = "00000000"
 
 # MULTIPLE_IN3_CONF
-MULTIPLE_IN3_CONF0 = "00011010"
-MULTIPLE_IN3_CONF1 = "00000100"
-MULTIPLE_IN3_CONF2 = "10010100"
+MULTIPLE_IN3_CONF0 = "00000000"
+MULTIPLE_IN3_CONF1 = "00000000"
+MULTIPLE_IN3_CONF2 = "00000000"
 
 # MULTIPLE_IN4_CONF
 MULTIPLE_IN4_CONF0 = "00000000"

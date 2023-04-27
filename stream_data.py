@@ -24,10 +24,6 @@ port = 23456                    # can be changed in online interface
 # Conversion factor to convert byte values into mV
 CONVERSION_FACTOR = 0.000286
 
-# Convert integer to bytes
-def integer_to_bytes(command):
-    return int(command).to_bytes(2, byteorder="big")
-
 # Convert byte-array value to an integer value and apply two's complement
 def convert_bytes_to_int(bytes_value, bytes_in_sample):
     value = None

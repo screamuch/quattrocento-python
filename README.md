@@ -19,17 +19,27 @@ Download and install it on your system:
 
 ## Configuration
 
-The bulk of configuration happens in the `configuration_generator.py` file, except the network parameters. Those are set in `stream_data.py`:
+The bulk of configuration happens in the `configuration_generator.py` file, except the network parameters. 
 
-```python
-# Network settings
-ip_address = '192.168.0.103'    # written on the QC's LCD
-port = 23456                    # can be changed in online interface
-```
+### Configuration Steps
 
-Then, follow directions in `configuration_generator.py` and [communication protocol](https://otbioelettronica.it/en/?preview=1&option=com_dropfiles&format=&task=frontfile.download&catid=41&id=70&Itemid=1000000000000) to set your acquisition parameters.
+1. Connect Quattrocento to network and electricity, according to manufacturer's manual.
 
-### Default configuration
+2. Follow directions in `configuration_generator.py` and [communication protocol](https://otbioelettronica.it/en/?preview=1&option=com_dropfiles&format=&task=frontfile.download&catid=41&id=70&Itemid=1000000000000) to set your acquisition parameters.
+
+3. Set Quattrocento's network address in `stream_data.py`:
+
+   ``` 
+   # Network settings
+   ip_address = '192.168.0.103'    # written on the QC's LCD
+   port = 23456                    # can be changed in online interface
+   ```
+
+4. Set your environment to *Python 3.8*. This can be done using [conda](https://docs.conda.io/en/latest/), [pyenv](https://github.com/pyenv/pyenv) or other tool of your choice.
+
+5. Run `$ python stream_data.py` to validate that data is coming in correctly.
+
+### Default Configuration
 
 As is, this code will print an array of integers that represent signal from each electrode. By default, it is set up to work with the following configuration:
 
@@ -94,14 +104,67 @@ while True:
 
 # Sends a stop acquisition command to quattrocento
 # Not necessary, but saves battery on the amplifier
-stream_data.disconnect_from_qc(connection)
+stream_data.disconnect_from_sq(connection)
 ```
 
 Additionally, you can refer to `write_to_csv.py` file for an example of how it can be done.
 
-## Acknowledgements (and/or Authors?)
+## Method Reference
 
- - see email
+### `stream_data.py`
+
+#### `convert_bytes_to_int(bytes_value, bytes_in_sample)`
+
+Convert byte-array value to an integer array and apply two's complement.
+
+#### `create_bin_command(start)`
+
+Generates a Quattrocento-friendly command. If `start` is 1 (by default) - generates a start command. If 0 - generates a stop command.
+
+#### `bytes_to_integers(sample_from_channels_as_bytes, number_of_channels, bytes_in_sample, output_milli_volts)`
+
+Takes a byte array that contains the raw signal data for all channels, the number of channels, the number of bytes per sample, and a boolean flag that specifies whether the output should be in millivolts. It converts each channel's byte value to an integer value, applies two's complement if necessary, and returns a list of channel values as integers. If `output_milli_volts` is set to `True`, this method multiplies the channel values by a conversion factor to convert them to millivolts.
+
+#### `read_raw_bytes(connection, number_of_all_channels, bytes_in_sample)` 
+
+Takes a socket connection to Quattrocento, the number of all channels (including accessory channels), and the number of bytes per sample. It reads raw byte data from the socket and returns the data as a byte array. This method is used to read the raw signal data from Quattrocento.
+
+#### `connect_to_qc(ip_address, port, start_command)` 
+
+Takes the IP address and port number of Quattrocento, and a binary command to start data acquisition. It establishes a socket connection to Quattrocento, sends a command to stop data acquisition, and then sends the start command to start data acquisition. It returns the socket connection to Quattrocento.
+
+#### `disconnect_from_sq(conn)` 
+
+Takes a socket connection to Quattrocento and sends a command to stop data acquisition. It then closes the socket connection to disconnect from Quattrocento.
+
+#### `read_emg_signal(connection, number_of_channels, bytes_in_sample, output_milli_volts=True)`
+
+Takes a socket connection to Quattrocento, the number of channels, the number of bytes per sample, and a boolean flag that specifies whether the output should be in millivolts. It reads the raw signal data from Quattrocento using the `read_raw_bytes` method and converts the raw data into integer values using the `bytes_to_integers` method. It then returns the list of channel values as integers.
+
+### `write_to_csv.py`
+
+**Takes 1 command-line argument:** `filename` ***without .csv extension*.**
+
+This script records a specified number of biological signal samples from Quattrocento and saves the data to a CSV file for further analysis.
+
+#### Modifiable parameters:
+
+1. `output_milli_volts`: A boolean flag passed to the `read_emg_signal` method that specifies whether to convert the channel values to millivolts (`output_milli_volts=True`) or leave them as raw integer values (`output_milli_volts=False`).
+2. `file_name`: The name of the CSV file that the script writes data to. This is specified by the first command-line argument when the script is run.
+3. `number_of_samples`: The number of biological signal samples to record. This is specified by the `for` loop that iterates over a range of `number_of_samples` and records a sample on each iteration. Set to 20000 by default.
+
+## Authors
+
+- [Peter Chudinov](https://github.com/screamuch) [Dept. of Biology, San Francisco State University] 
+
+- [Xiaorong Zhang](https://github.com/xrzhang41) [Dept. of Computer Engineering, San Francisco State University]
+
+## Acknowledgements
+
+- Zhuwei Qin [Dept. of Computer Engineering, San Francisco State University]
+
+- Yuriah Lydon [Dept. of Computer Engineering, San Francisco State University]
+- Enrico Merlo [OT Bioelettronica]
 
 ## Citation
 
@@ -302,7 +365,8 @@ needs a CITATION.cff file
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2023 Peter Chudinov
+   Copyright 2023 Peter Chudinov, Xiaorong Zhang, ICE Lab at San Francisco
+   State University
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
