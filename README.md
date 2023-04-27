@@ -171,7 +171,12 @@ This script records a specified number of biological signal samples from Quattro
 If you use this software, please cite it as below:
 
 ```
-needs a CITATION.cff file
+authors:
+  - name: Peter Chudinov
+  - name: Xiaorong Zhang
+title: quattrocento-python
+version: 1.0.0
+doi: 10.5281/zenodo.7869982
 ```
 
 ## License
