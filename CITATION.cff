@@ -1,8 +1,11 @@
 cff-version: 1.2.0
-message: If you use this software, please cite it as below:
+message: "If you use this software, please cite it as below:"
 authors:
-  - name: Peter Chudinov
-  - name: Xiaorong Zhang
+  - family-names: Chudinov
+    given-names: Peter
+  - family-names: Zhang
+    given-names: Xiaorong
 title: quattrocento-python
 version: 1.0.0
 doi: 10.5281/zenodo.7869982
+url: "https://github.com/screamuch/quattrocento-python"
