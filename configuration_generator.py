@@ -24,12 +24,12 @@ from crc import Calculator, Crc8
 # Set number of channels (electrodes) you will use
 # This number can be 96, 192, 288, 384
 # The bits will be automatically set
-NUMBER_OF_CHANNELS = 96
+NUMBER_OF_CHANNELS = 288
 
 # Set sampling frequency you will use
 # This value can be 512, 2048, 5120, 10240
 # The bits will be automatically set
-SAMPLING_FREQUENCY = 512
+SAMPLING_FREQUENCY = 2048
 
 # ACQ_SETT
 # Sampling frequency, number of channels,
@@ -118,14 +118,14 @@ MULTIPLE_IN1_CONF1 = "00000100"
 MULTIPLE_IN1_CONF2 = "10010100"
 
 # MULTIPLE_IN2_CONF
-MULTIPLE_IN2_CONF0 = "00000000"
-MULTIPLE_IN2_CONF1 = "00000000"
-MULTIPLE_IN2_CONF2 = "00000000"
+MULTIPLE_IN2_CONF0 = "00011010"
+MULTIPLE_IN2_CONF1 = "00000100"
+MULTIPLE_IN2_CONF2 = "10010100"
 
 # MULTIPLE_IN3_CONF
-MULTIPLE_IN3_CONF0 = "00000000"
-MULTIPLE_IN3_CONF1 = "00000000"
-MULTIPLE_IN3_CONF2 = "00000000"
+MULTIPLE_IN3_CONF0 = "00011010"
+MULTIPLE_IN3_CONF1 = "00000100"
+MULTIPLE_IN3_CONF2 = "10010100"
 
 # MULTIPLE_IN4_CONF
 MULTIPLE_IN4_CONF0 = "00000000"
@@ -160,9 +160,8 @@ checksum = hex(calculator.checksum(bytes.fromhex(acquisition_hex)))[2:]
 
 # This method puts everything together
 def generate_command():
-    msg = acquisition_hex + checksum
+    msg = acquisition_hex + checksum.zfill(2)
     return msg, NUMBER_OF_CHANNELS, SAMPLING_FREQUENCY
 
 if __name__ == "__main__":
     print(generate_command()[0])
-
